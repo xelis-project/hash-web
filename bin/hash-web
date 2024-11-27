@@ -1,4 +1,6 @@
-import hash_web from "./index.js";
+#!/usr/bin/env node
+
+import hash_web from "../index.js";
 
 const args = process.argv.slice(2);
 
