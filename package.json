@@ -10,6 +10,11 @@
   "scripts": {
     "test": "cd test && node ./test.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xelis-project/hash-web"
+  },
+  "homepage": "https://github.com/xelis-project/hash-web#readme",
   "author": "g45t345rt",
   "license": "MIT"
 }
