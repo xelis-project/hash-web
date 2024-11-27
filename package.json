@@ -1,0 +1,12 @@
+{
+  "name": "hash-web",
+  "version": "1.0.0",
+  "description": "A script that appends hashes to filenames, import paths, and any other links for your web project.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "cd test && node ./test.js"
+  },
+  "author": "g45t345rt",
+  "license": "MIT"
+}
