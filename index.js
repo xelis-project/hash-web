@@ -2,9 +2,10 @@ import fs from "fs";
 import path from "path";
 import crypto from "crypto";
 
-const html_file_ext = [".html"];
-const js_file_ext = [".js"];
-const style_file_ext = [".css"];
+const html_file_ext = ".html";
+const js_file_ext = ".js";
+const style_file_ext = ".css";
+const webmanifest_file_ext = ".webmanifest";
 
 function gen_hash(data) {
   const hash = crypto.createHash("sha256");
@@ -45,7 +46,7 @@ function load_file(file_path) {
 function load_input(file_path, { working_dir, output_dir }) {
   const file_info = load_file(path.join(working_dir, file_path));
   if (!file_info.exists) {
-    console.log("skip", file_info.path);
+    console.log("skip file", file_info.path);
     return;
   }
 
@@ -53,19 +54,23 @@ function load_input(file_path, { working_dir, output_dir }) {
   let should_hash_file = true;
   let copy = false;
 
-  if (html_file_ext.indexOf(file_info.ext) !== -1) {
-    // .html
-    imports = parse_html_imports(file_info.data);
-    // don't generate hash for html files
-    should_hash_file = false;
-  } else if (js_file_ext.indexOf(file_info.ext) !== -1) {
-    // .js
-    imports = parse_js_imports(file_info.data);
-  } else if (style_file_ext.indexOf(file_info.ext) !== -1) {
-    // .css
-    imports = parse_style_imports(file_info.data);
-  } else {
-    copy = true; // write the buf variable instead of the data - the data is using utf-8 encoding to make modication but sometimes you have files in other encoding (that don't need modif)
+  switch (file_info.ext) {
+    case html_file_ext: // .html
+      imports = parse_html_imports(file_info.data);
+      // don't generate hash for html files
+      should_hash_file = false;
+      break;
+    case js_file_ext:  // .js
+      imports = parse_js_imports(file_info.data);
+      break;
+    case style_file_ext: // .css
+      imports = parse_style_imports(file_info.data);
+      break;
+    case webmanifest_file_ext: // .webmanifest
+      imports = parse_webmanifest_imports(file_info.data);
+      break;
+    default:
+      copy = true; // write the buf variable instead of the data - the data is using utf-8 encoding to make modication but sometimes you have files in other encoding (that don't need modif)
   }
 
   imports.forEach((imp) => {
@@ -75,7 +80,7 @@ function load_input(file_path, { working_dir, output_dir }) {
       file_info.data = file_info.data.replace(imp.path, hash_path);
       load_input(imp.path, { working_dir, output_dir });
     } else {
-      console.log("skip", imp.path);
+      console.log("skip import", imp.path);
     }
   });
 
@@ -85,7 +90,7 @@ function load_input(file_path, { working_dir, output_dir }) {
   }
 
   const output = path.join(output_dir, new_file_path);
-  console.log("hash", file_info.path, new_file_path);
+  console.log("hash file", file_info.path, new_file_path);
   const dir = path.dirname(output);
 
   if (!fs.existsSync(dir)) {
@@ -119,7 +124,7 @@ function parse_html_imports(data) {
   while (match = r_script_content.exec(data)) {
     const content = match[1];
     if (content) {
-      const js_imports =  parse_js_imports(content);
+      const js_imports = parse_js_imports(content);
       imports = [...imports, ...js_imports];
     }
   }
@@ -168,6 +173,18 @@ function parse_style_imports(data) {
   return imports;
 }
 
+function parse_webmanifest_imports(data) {
+  const r_src = /"src":\s*"([^"]+)"/g;
+
+  const imports = [];
+  let match;
+
+  while (match = r_src.exec(data)) {
+    imports.push({ match: match[0], path: match[1] });
+  }
+
+  return imports;
+}
 
 function hash_web({ input, output_dir }) {
   const working_dir = path.dirname(input);
