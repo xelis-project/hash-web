@@ -170,8 +170,6 @@ function parse_style_imports(data) {
 
 
 function hash_web({ input, output_dir }) {
-  //const entry = "test/project/index.html";
-  //const output_dir = "build";
   const working_dir = path.dirname(input);
   const file_path = path.basename(input);
 
