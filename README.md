@@ -39,3 +39,12 @@ hash_web({
   output_dir: `./build`
 });
 ```
+
+## Handle links
+
+| Ext | Patterns |
+|-----|----------|
+| `.html` | `src=""`, `href=""`, `<script></script>` |
+| `.css` | `url("")` |
+| `.js` | `import`, `fetch`, `new URL`, `new Request` |
+| `.webmanifest` | `"src": ""` |
