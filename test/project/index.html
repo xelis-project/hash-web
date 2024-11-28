@@ -1,21 +1,25 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>This is a test project</title>
-    <link href="./index.css" rel="stylesheet">
-    <link rel="icon" type="image/png" href="/favicon/favicon-48x48.png" sizes="48x48" />
-    <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
-    <link rel="shortcut icon" href="/favicon/favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
-    <link rel="manifest" href="/favicon/site.webmanifest" />
-  </head>
-  <body>
-    <img src="./test.svg" />
-    <a href="./index_2.html">Index 2</a>
-    <script type="module">
-      import test from "./index_3.js";
-      console.log(test);
-    </script>
-    <script src="./index.js" type="module"></script>
-  </body>
+
+<head>
+  <title>This is a test project</title>
+  <link href="./index.css" rel="stylesheet">
+  <link rel="icon" type="image/png" href="/favicon/favicon-48x48.png" sizes="48x48" />
+  <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+  <link rel="shortcut icon" href="/favicon/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+  <link rel="manifest" href="/favicon/site.webmanifest" />
+</head>
+
+<body>
+  <img src="./test.svg" />
+  <a href="./index_2.html">Index 2</a>
+  <img src="./favicon/favicon-48x48.png" alt="test" srcset="./favicon/web-app-manifest-192x192.png 2x, ./favicon/web-app-manifest-512x512.png 3x" />
+  <script type="module">
+    import test from "./index_3.js";
+    console.log(test);
+  </script>
+  <script src="./index.js" type="module"></script>
+</body>
+
 </html>
