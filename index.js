@@ -109,6 +109,7 @@ function parse_html_imports(data) {
   const r_src = /src=['"]([^'"]*)['"]/g; // src=""
   const r_script_content = /<script[^>]*>([^>]*)<\/script>/g; // <script></script> handle inline script content
   const r_srcset = /srcset=['"]([^'"]*)['"]/g; // srcset="" content is separated by commas to specify image resources
+  const r_object_data = /<object.+data=["']([^"']*)["']/g; // <object data=""
 
   let imports = [];
   let match;
@@ -132,13 +133,19 @@ function parse_html_imports(data) {
   const r_srcset_url = /^\s*([^\s]*)\s+/;
   while (match = r_srcset.exec(data)) {
     const content = match[1];
-    const resources = content.split(",");
-    resources.forEach((resource) => {
-      const sub_match = r_srcset_url.exec(resource);
-      if (sub_match) {
-        imports.push({ match: sub_match[0], path: sub_match[1] });
-      }
-    });
+    if (content) {
+      const resources = content.split(",");
+      resources.forEach((resource) => {
+        const sub_match = r_srcset_url.exec(resource);
+        if (sub_match) {
+          imports.push({ match: sub_match[0], path: sub_match[1] });
+        }
+      });
+    }
+  }
+
+  while (match = r_object_data.exec(data)) {
+    imports.push({ match: match[0], path: match[1] });
   }
 
   return imports;

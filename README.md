@@ -44,7 +44,7 @@ hash_web({
 
 | Ext | Patterns |
 |-----|----------|
-| `.html` | `src=""`, `href=""`, `<script></script>`, `srcset=""` |
+| `.html` | `src=""`, `href=""`, `<script></script>`, `srcset=""`, `<object data="">` |
 | `.css` | `url("")` |
 | `.js` | `import`, `fetch`, `new URL`, `new Request` |
 | `.webmanifest` | `"src": ""` |
