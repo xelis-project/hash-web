@@ -51,14 +51,11 @@ function load_input(file_path, { working_dir, output_dir }) {
   }
 
   let imports = [];
-  let should_hash_file = true;
   let copy = false;
 
   switch (file_info.ext) {
     case html_file_ext: // .html
       imports = parse_html_imports(file_info.data);
-      // don't generate hash for html files
-      should_hash_file = false;
       break;
     case js_file_ext:  // .js
       imports = parse_js_imports(file_info.data);
@@ -77,7 +74,11 @@ function load_input(file_path, { working_dir, output_dir }) {
     const imp_file_info = load_file(path.join(working_dir, imp.path));
     if (imp_file_info.exists) {
       const hash_path = set_file_hash(imp.path, imp_file_info.hash);
-      file_info.data = file_info.data.replace(imp.path, hash_path);
+      if (imp_file_info.ext !== ".html") { // don't hash html import
+        console.log("hash import", imp.path);
+        file_info.data = file_info.data.replace(imp.path, hash_path);
+      }
+
       load_input(imp.path, { working_dir, output_dir });
     } else {
       console.log("skip import", imp.path);
@@ -85,7 +86,7 @@ function load_input(file_path, { working_dir, output_dir }) {
   });
 
   let new_file_path = file_path;
-  if (should_hash_file) {
+  if (file_info.ext !== ".html") { // don't hash html file
     new_file_path = set_file_hash(file_path, file_info.hash);
   }
 
