@@ -110,6 +110,7 @@ function parse_html_imports(data) {
   const r_script_content = /<script[^>]*>([^>]*)<\/script>/g; // <script></script> handle inline script content
   const r_srcset = /srcset=['"]([^'"]*)['"]/g; // srcset="" content is separated by commas to specify image resources
   const r_object_data = /<object.+data=["']([^"']*)["']/g; // <object data=""
+  const r_content = /content=['"]([^'"]*)['"]/g; // content="" mostly for meta tags 
 
   let imports = [];
   let match;
@@ -146,6 +147,15 @@ function parse_html_imports(data) {
 
   while (match = r_object_data.exec(data)) {
     imports.push({ match: match[0], path: match[1] });
+  }
+
+  // check for relative path here because content can be anything
+  // usually href and src are exclusive to resource ref so I don't check
+  const r_relative_path = /^(\/|\.\/|\.\.\/).*/;
+  while (match = r_content.exec(data)) {
+    if (r_relative_path.test(match[1])) {
+      imports.push({ match: match[0], path: match[1] });
+    }
   }
 
   return imports;
