@@ -71,7 +71,9 @@ function load_input(file_path, { working_dir, output_dir }) {
   }
 
   imports.forEach((imp) => {
-    const imp_file_info = load_file(path.join(working_dir, imp.path));
+    const fdir = path.dirname(file_path);
+    const fp = path.join(fdir, imp.path);
+    const imp_file_info = load_file(path.join(working_dir, fp));
     if (imp_file_info.exists) {
       const hash_path = set_file_hash(imp.path, imp_file_info.hash);
       if (imp_file_info.ext !== ".html") { // don't hash html import
@@ -79,7 +81,7 @@ function load_input(file_path, { working_dir, output_dir }) {
         file_info.data = file_info.data.replace(imp.path, hash_path);
       }
 
-      load_input(imp.path, { working_dir, output_dir });
+      load_input(fp, { working_dir, output_dir });
     } else {
       console.log("skip import", imp.path);
     }
